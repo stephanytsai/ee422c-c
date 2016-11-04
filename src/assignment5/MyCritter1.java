@@ -18,7 +18,7 @@
  * right of it parent. MyCritter4 will be shown by a "1". MyCritter4 
  * will always fight if encountered.
  */
-package assignment4;
+package assignment5;
 
 public class MyCritter1 extends Critter {
 	
@@ -42,6 +42,12 @@ public class MyCritter1 extends Critter {
 	public boolean fight(String oponent) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	@Override
+	public CritterShape viewShape() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

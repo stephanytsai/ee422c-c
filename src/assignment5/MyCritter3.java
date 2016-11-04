@@ -17,7 +17,7 @@
  *They do not reproduce. They will always fight 
  *when encountered. They will show on the board as a "3".  
  */
-package assignment4;
+package assignment5;
 
 public class MyCritter3 extends Critter {
 	@Override
@@ -36,6 +36,12 @@ public class MyCritter3 extends Critter {
 	public boolean fight(String oponent) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	@Override
+	public CritterShape viewShape() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 
