@@ -1,6 +1,13 @@
 package assignment5;
 
+import java.util.Iterator;
 import java.util.List;
+
+import assignment4.Algae;
+import assignment4.Critter;
+import assignment4.CritterWorld;
+import assignment4.InvalidCritterException;
+import assignment4.Params;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
@@ -41,7 +48,11 @@ public abstract class Critter {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
 	
-	protected String look(int direction, boolean steps) {return "";}
+	protected String look(int direction, boolean steps) {
+		
+		
+		return "";
+	}
 	
 	/* rest is unchanged from Project 4 */
 	
@@ -64,20 +75,188 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
+	protected int getX(){ return x_coord;}
+	protected int getY(){ return y_coord;}
 	
-	protected final void walk(int direction) {}
 	
-	protected final void run(int direction) {}
+	protected final void walk(int direction) {
+		if (direction==0){
+			this.x_coord++;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+		}else if(direction==1){
+			this.x_coord++;
+			this.y_coord++;
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+		}else if(direction==2){
+			this.y_coord++;
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if(direction==3){
+			this.x_coord--;
+			this.y_coord++;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if (direction==4){
+			this.x_coord--;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+		}else if(direction==5){
+			this.x_coord--;
+			this.y_coord--;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if(direction==6){
+			this.y_coord--;
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if(direction==7){
+			this.x_coord++;
+			this.y_coord--;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}
+		this.setEnergy(this.getEnergy()-Params.walk_energy_cost);
+	}
 	
-	protected final void reproduce(Critter offspring, int direction) {}
+	protected final void run(int direction) {
+		if (direction==0){
+			this.x_coord+=2;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+		}else if(direction==1){
+			this.x_coord+=2;
+			this.y_coord+=2;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if(direction==2){
+			this.y_coord+=2;
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if(direction==3){
+			this.x_coord-=2;
+			this.y_coord+=2;
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+			
+		}else if (direction==4){
+			this.x_coord-=2;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+		}else if(direction==5){
+			this.x_coord-=2;
+			this.y_coord-=2;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if(direction==6){
+			this.y_coord-=2;
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+
+		}else if(direction==7){
+			this.x_coord+=2;
+			this.y_coord-=2;
+			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
+			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+		}
+		this.setEnergy(this.getEnergy()-Params.run_energy_cost);
+	}
+	
+	protected final void reproduce(Critter offspring, int direction) {
+		this.setEnergy(Math.floorDiv(this.getEnergy(), 2)+1);
+		offspring.setEnergy(Math.floorDiv(this.getEnergy(), 2));
+		offspring.walk(direction);
+		Iterator I=babies.iterator();
+		Critter current;
+		while(I.hasNext()){
+			current=(Critter) I.next();
+		}
+		babies.add(offspring); 
+	}
 
 	public abstract void doTimeStep();
 	public abstract boolean fight(String oponent);
 	
+	protected void setEnergy(int new_energy_value) {
+		energy = new_energy_value;
+	}
 	
-	public static void worldTimeStep() {}
+	protected void setX_coord(int new_x_coord) {
+		x_coord = new_x_coord;
+	}
 	
-	public static void displayWorld() {}
+	protected void setY_coord(int new_y_coord) {
+		y_coord = new_y_coord;
+	}
+	
+	/**
+	 *invoke doTimeStep for each critter in critterworld
+	 *encounters
+	 *rest energy
+	 *generate algae
+	 *add babies to population
+	 *clear dead
+	 * @throws InvalidCritterException 
+	 * @throws IllegalAccessException 
+	 * @throws ClassNotFoundException 
+	 * @throws InstantiationException 
+	 */
+	public static void worldTimeStep() throws InstantiationException, ClassNotFoundException, IllegalAccessException, InvalidCritterException {
+		Iterator critterIter= CritterWorld.critterCollection.iterator(); 
+		Critter current; 
+		while(critterIter.hasNext()){
+			current=(Critter) critterIter.next();
+			current.doTimeStep();
+			current.setEnergy(current.getEnergy()-Params.rest_energy_cost);
+		}
+		//if more than one critter in space, 
+		//encounter
+		int i;
+		int j;
+		int numCritters = CritterWorld.critterCollection.size();
+		for (i=0; i<numCritters; i++){
+			current = CritterWorld.critterCollection.get(i);
+			for(j=i+1; j<numCritters; j++){
+				Critter nextCritter = CritterWorld.critterCollection.get(j);
+				//compare current to nextCritter in terms of coordinate location
+				if(current.isSamePostion(nextCritter) && (current.getEnergy()*nextCritter.getEnergy() > 0)){
+					Critter.resolveEncounter(current, nextCritter);
+				}
+			}
+		}
+		
+		//subtract rest energy
+		Iterator I= CritterWorld.critterCollection.iterator(); 
+		Critter curr; 
+		while(critterIter.hasNext()){
+			curr=(Critter) I.next();
+			curr.setEnergy(curr.getEnergy()-Params.rest_energy_cost);
+		}
+		
+		//adding algae   //ERROR HERE!!!! TODO the rest energies aren't subtracting, algae adding too much energy
+		for (int k=0; k<Params.refresh_algae_count; k++){
+			Critter offspring=new Algae(); 
+			offspring.setEnergy(Params.start_energy);
+			offspring.setX_coord(getRandomInt(Params.world_width));  
+			offspring.setY_coord(getRandomInt(Params.world_height));
+			CritterWorld.critterCollection.add(offspring);
+		}
+		
+		//add babies to population
+		Iterator babiesI= babies.iterator(); 
+		Critter currentB;
+		while (babiesI.hasNext()){
+			CritterWorld.critterCollection.add((Critter) babiesI.next());
+		}
+		babies.clear();
+		Critter.clearDead(); //rest energy and clear dead
+	}
+	
+	
+	public static void displayWorld() {
+		//should be different
+	}
 	
 	/* create and initialize a Critter subclass
 	 * critter_class_name must be the name of a concrete subclass of Critter, if not
