@@ -75,8 +75,7 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
-	protected int getX(){ return x_coord;}
-	protected int getY(){ return y_coord;}
+
 	
 	
 	protected final void walk(int direction) {
