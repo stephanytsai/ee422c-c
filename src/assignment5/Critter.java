@@ -3,11 +3,11 @@ package assignment5;
 import java.util.Iterator;
 import java.util.List;
 
-import assignment4.Algae;
-import assignment4.Critter;
-import assignment4.CritterWorld;
-import assignment4.InvalidCritterException;
-import assignment4.Params;
+import assignment5.Algae;
+import assignment5.Critter;
+import assignment5.CritterWorld;
+import assignment5.InvalidCritterException;
+import assignment5.Params;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
@@ -50,7 +50,7 @@ public abstract class Critter {
 	
 	protected String look(int direction, boolean steps) {
 		
-		
+			
 		return "";
 	}
 	
@@ -257,18 +257,92 @@ public abstract class Critter {
 		//should be different
 	}
 	
-	/* create and initialize a Critter subclass
-	 * critter_class_name must be the name of a concrete subclass of Critter, if not
-	 * an InvalidCritterException must be thrown
+	/**
+	 * create and initialize a Critter subclass.
+	 * critter_class_name must be the unqualified name of a concrete subclass of Critter, if not,
+	 * an InvalidCritterException must be thrown.
+	 * (Java weirdness: Exception throwing does not work properly if the parameter has lower-case instead of
+	 * upper. For example, if craig is supplied instead of Craig, an error is thrown instead of
+	 * an Exception.)
+	 * @param critter_class_name
+	 * @throws InvalidCritterException
+	 * @throws IllegalAccessException 
 	 */
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException {}
-	
-	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
-		return null;
+
+	public static void makeCritter(String critter_class_name) throws InvalidCritterException, InstantiationException, ClassNotFoundException, IllegalAccessException {
+		Critter critterInstance = null;
+		Class critterType; 
+		String name="";
+		try { 
+			name=name.concat("assignment4."+critter_class_name);
+			critterType = Class.forName(name); 
+			critterInstance =  (Critter) critterType.newInstance(); 
+		} catch (ClassNotFoundException e) {
+			return;
+			//throw new InvalidCritterException(e.toString());
+		} catch (IllegalAccessException | InstantiationException e){
+		//	throw new InvalidCritterException(e.toString());
+			return;
+		}
+		
+		(critterInstance).setX_coord(getRandomInt(Params.world_width));
+		(critterInstance).setY_coord(getRandomInt(Params.world_height));
+		(critterInstance).setEnergy(Params.start_energy);
+		
+		CritterWorld.critterCollection.add(critterInstance); //ADDING CRITTER
+				
 	}
 	
-	public static void runStats(List<Critter> critters) {}
 	
+	/**
+	 * Gets a list of critters of a specific type.
+	 * @param critter_class_name What kind of Critter is to be listed.  Unqualified class name.
+	 * @return List of Critters.
+	 * @throws InvalidCritterException
+	 */
+	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
+		List<Critter> result = new java.util.ArrayList<Critter>();
+		Critter critterInstance = null;
+		Class critterType; 
+
+		try { 
+			critterType = Class.forName(critter_class_name); 
+		} catch (ClassNotFoundException e) {
+		    throw new InvalidCritterException(e.toString());
+		}
+		for (Critter c:CritterWorld.critterCollection){
+			if (c.getClass().equals(critterType)){ //add if same critter type
+				result.add(c);
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * Prints out how many Critters of each type there are on the board.
+	 * @param critters List of Critters.
+	 */
+	public static void runStats(List<Critter> critters) {
+		System.out.print("" + critters.size() + " critters as follows -- ");
+		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
+		for (Critter crit : critters) {
+			String crit_string = crit.toString();
+			Integer old_count = critter_count.get(crit_string);
+			if (old_count == null) {
+				critter_count.put(crit_string,  1);
+			} else {
+				critter_count.put(crit_string, old_count.intValue() + 1);
+			}
+		}
+		String prefix = "";
+		for (String s : critter_count.keySet()) {
+			System.out.print(prefix + s + ":" + critter_count.get(s));
+			prefix = ", ";
+		}
+		System.out.println();		
+	}	
 	/* the TestCritter class allows some critters to "cheat". If you want to 
 	 * create tests of your Critter model, you can create subclasses of this class
 	 * and then use the setter functions contained here. 
@@ -322,10 +396,89 @@ public abstract class Critter {
 	}
 	
 	/**
+	 * subtracts rest_energy
+	 * clears dead critters from critterworld
+	 * returns updated list 
+	 * 
+	 * @return
+	 */
+	
+	private static List<Critter> clearDead(){ 
+		Iterator I=CritterWorld.critterCollection.iterator();
+		Critter current;
+		while(I.hasNext()){
+			current=(Critter) I.next();
+			int energy= current.getEnergy();
+			energy=energy-Params.rest_energy_cost;
+			current.setEnergy(energy);
+			if (energy<=0){
+				I.remove(); 
+			}
+		}
+		return CritterWorld.critterCollection; 
+	}
+	
+	/**
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
+		Iterator I= CritterWorld.critterCollection.iterator(); 
+		Critter current;
+		while (I.hasNext()){
+			current=(Critter) I.next();
+			I.remove();
+		}
 	}
+	/**
+	 * Check to see if a critter (this) is in the same position as another critter (c2)
+	 * @param c2
+	 * @return
+	 */
+	public boolean isSamePostion(Critter c2) {
+		if ( (this.x_coord == c2.x_coord) && (this.y_coord == c2.y_coord)){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	/**
+	 * Resolve encounter between two critters that occupy the same location
+	 * @param c1
+	 * @param c2
+	 */
+	private static void resolveEncounter(Critter c1, Critter c2) {
+		//determine which critters want to attack and give them an attack power number
+		boolean c1fight = c1.fight(c2.toString()); 
+		boolean c2fight = c2.fight(c1.toString());
+		int c1Attack = 0;
+		int c2Attack = 0;
+		
 	
+		if (c1.getEnergy()>0 && c1fight){
+			c1Attack = Critter.getRandomInt(c1.getEnergy());
+		}else if (c2.getEnergy()>0 && c2fight){
+			c2Attack = Critter.getRandomInt(c2.getEnergy());
+		}else if (c2.getEnergy()<=0){
+			c2.setEnergy(0);
+		}else if (c1.getEnergy()<=0){
+			c1.setEnergy(0);
+		}
+		
+		//use attack power number to determine which critter wins 
+		//winner retains energy and is awarded 1/2 losers energy. Loser dies (Energy is set to <= 0).
+		if(c1Attack >= c2Attack){
+			int c1Energy = c1.getEnergy() + (c2.getEnergy()/2);
+			c1.setEnergy(c1Energy);
+			c2.setEnergy(0);
+		}else if(c1Attack==0 && c2Attack==0){
+			//Algae overlapping 
+			c1.setEnergy(0);
+		}else{
+			int c2Energy = c2.getEnergy() + (c1.getEnergy()/2);
+			c2.setEnergy(c2Energy);
+			c1.setEnergy(0);
+		}
+	}
 	
 }

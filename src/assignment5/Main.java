@@ -28,6 +28,8 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		system.out.println("do nothig");
+			
 		launch(args);
 	}
 }
