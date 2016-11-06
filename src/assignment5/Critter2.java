@@ -1,4 +1,4 @@
-/* CRITTERS <MyCritter1.java>
+/* CRITTERS <MyCritter2.java>
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
  * <Stephany Tsai>
@@ -12,30 +12,34 @@
  */
 
 /*
- * MyCritter1 runs in the 5 direction each time step if its 
- * energy is less than or equal to 200. Otherwise, it will
- * reproduce and the offspring will be in the space to the 
- * right of it parent. MyCritter4 will be shown by a "1". MyCritter4 
- * will always fight if encountered.
+
+ *MyCritter2 runs in a random direction at each time step. 
+ *On the board, it will show as a "2". It
+ *do not reproduce. They will always fight when encountered.  
  */
 package assignment5;
 
-public class MyCritter1 extends Critter {
+public class Critter2 extends Critter{
 	
-	@Override
-	public String toString() {
-		return "1";
+	public int dir;
+	// Tiger constructor
+	public Critter2() {
+		dir = Critter.getRandomInt(8);
 	}
 	
 	@Override
+	public String toString() {
+		return "2";
+	}
+	
+	
+	// Runs in direction 7 and uses amt of energy in run_energy_cost
+	@Override
 	public void doTimeStep() {
 		// TODO Auto-generated method stub
-		if (this.getEnergy()>200){
-			MyCritter1 offspring=new MyCritter1();
-			this.reproduce(offspring, 0);
-		}else{
-			this.run(5);
-		}
+		String out=this.look(0,true); 
+		System.out.println("looked and saw: "+ out);
+		
 	}
 
 	@Override
@@ -49,7 +53,5 @@ public class MyCritter1 extends Critter {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-
 
 }

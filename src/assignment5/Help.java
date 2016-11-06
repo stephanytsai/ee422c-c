@@ -87,7 +87,7 @@ public class Help {
 				gotvalid=true;
 			}else{
 				try{
-					holder=holder.concat("assignment4."+word);
+					holder=holder.concat("assignment5."+word);
 					critterType = Class.forName(holder);
 				}catch (ClassNotFoundException e) {
 				//	gotvalid=false;
@@ -160,7 +160,7 @@ public class Help {
 			Class critterType = null; 
 			String holder="";
 			try { 
-				holder=holder.concat("assignment4."+a[1]);
+				holder=holder.concat("assignment5."+a[1]);
 				critterType = Class.forName(holder);
 			} catch (ClassNotFoundException e) {
 				System.out.println("error processing: "+user);
@@ -175,7 +175,7 @@ public class Help {
 			String holder="";
 			Class critterType;
 			try { 
-				holder=holder.concat("assignment4."+a[1]);
+				holder=holder.concat("assignment5."+a[1]);
 				critterType = Class.forName(holder);
 			} catch (ClassNotFoundException e) {
 				System.out.println("error processing: "+user);

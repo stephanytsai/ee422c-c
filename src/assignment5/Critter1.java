@@ -1,4 +1,4 @@
-/* CRITTERS <MyCritter4.java>
+/* CRITTERS <MyCritter1.java>
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
  * <Stephany Tsai>
@@ -12,24 +12,30 @@
  */
 
 /*
-
- *MyCritter3 walks in the 1 direction each time step.
- *They do not reproduce. They will always fight 
- *when encountered. They will show on the board as a "3".  
+ * MyCritter1 runs in the 5 direction each time step if its 
+ * energy is less than or equal to 200. Otherwise, it will
+ * reproduce and the offspring will be in the space to the 
+ * right of it parent. MyCritter4 will be shown by a "1". MyCritter4 
+ * will always fight if encountered.
  */
 package assignment5;
 
-public class MyCritter3 extends Critter {
+public class Critter1 extends Critter {
+	
 	@Override
 	public String toString() {
-		return "3"; 
+		return "1";
 	}
 	
 	@Override
 	public void doTimeStep() {
 		// TODO Auto-generated method stub
-	
-		this.walk(1); //energy level reduced in walk function
+		if (this.getEnergy()>200){
+			Critter1 offspring=new Critter1();
+			this.reproduce(offspring, 0);
+		}else{
+			this.run(5);
+		}
 	}
 
 	@Override

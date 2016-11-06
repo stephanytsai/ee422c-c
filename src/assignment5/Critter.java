@@ -49,8 +49,52 @@ public abstract class Critter {
 	}
 	
 	protected String look(int direction, boolean steps) {
+		int num_steps=0; 
+		int x_hold=this.x_coord; 
+		int y_hold=this.y_coord; 
+		if (steps){
+			num_steps=2;
+		}else{
+			num_steps=1;
+		}
 		
-			
+		if (direction==0){
+			x_hold+=num_steps;
+			x_hold= Math.floorMod(x_hold, Params.world_width);
+		}else if(direction==1){
+			x_hold+=num_steps;
+			y_hold+=num_steps;
+			y_hold= Math.floorMod(y_hold, Params.world_height);
+			x_hold= Math.floorMod(x_hold, Params.world_width);
+		}else if(direction==2){
+			y_hold+=num_steps;
+			y_hold= Math.floorMod(y_hold, Params.world_height);
+		}else if(direction==3){
+			x_hold-=num_steps;
+			y_hold+=num_steps;
+			x_hold= Math.floorMod(x_hold, Params.world_width);
+			y_hold= Math.floorMod(y_hold, Params.world_height);
+		}else if (direction==4){
+			x_hold-=num_steps;
+			x_hold= Math.floorMod(x_hold, Params.world_width);
+		}else if(direction==5){
+			x_hold-=num_steps;
+			y_hold-=num_steps;
+			x_hold= Math.floorMod(x_hold, Params.world_width);
+			y_hold= Math.floorMod(y_hold, Params.world_height);
+		}else if(direction==6){
+			y_hold-=num_steps;
+			y_hold= Math.floorMod(y_hold, Params.world_height);
+		}else if(direction==7){
+			x_hold-=num_steps;
+			y_hold-=num_steps;
+			x_hold= Math.floorMod(x_hold, Params.world_width);
+			y_hold= Math.floorMod(y_hold, Params.world_height);
+		}
+		
+		if (world[x_hold][y_hold]!=null){
+			return world[x_hold][y_hold];
+		}
 		return "";
 	}
 	
@@ -75,8 +119,6 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
-
-	
 	
 	protected final void walk(int direction) {
 		if (direction==0){
@@ -117,7 +159,7 @@ public abstract class Critter {
 			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
 
 		}
-		this.setEnergy(this.getEnergy()-Params.walk_energy_cost);
+		this.energy=this.getEnergy()-Params.walk_energy_cost;
 	}
 	
 	protected final void run(int direction) {
@@ -158,13 +200,22 @@ public abstract class Critter {
 			this.y_coord-=2;
 			this.x_coord= Math.floorMod(this.x_coord, Params.world_width);
 			this.y_coord= Math.floorMod(this.y_coord, Params.world_height);
+ 
+
 		}
-		this.setEnergy(this.getEnergy()-Params.run_energy_cost);
+		this.energy= (this.getEnergy()-Params.run_energy_cost);
+
 	}
-	
+
+	/**
+	 * Places the new offspring in an adjacent coordinate location to the parent, according to the direction that is passed
+	 * @param offspring
+	 * @param direction
+	 */
+	@SuppressWarnings("unchecked")
 	protected final void reproduce(Critter offspring, int direction) {
-		this.setEnergy(Math.floorDiv(this.getEnergy(), 2)+1);
-		offspring.setEnergy(Math.floorDiv(this.getEnergy(), 2));
+		this.energy=Math.floorDiv(this.getEnergy(), 2)+1;
+		offspring.energy=(Math.floorDiv(this.getEnergy(), 2));
 		offspring.walk(direction);
 		Iterator I=babies.iterator();
 		Critter current;
@@ -172,22 +223,85 @@ public abstract class Critter {
 			current=(Critter) I.next();
 		}
 		babies.add(offspring); 
+		
 	}
-
 	public abstract void doTimeStep();
 	public abstract boolean fight(String oponent);
 	
-	protected void setEnergy(int new_energy_value) {
-		energy = new_energy_value;
+	/**
+	 * Check to see if a critter (this) is in the same position as another critter (c2)
+	 * @param c2
+	 * @return
+	 */
+	public boolean isSamePostion(Critter c2) {
+		if ( (this.x_coord == c2.x_coord) && (this.y_coord == c2.y_coord)){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	/**
+	 * Resolve encounter between two critters that occupy the same location
+	 * @param c1
+	 * @param c2
+	 */
+	private static void resolveEncounter(Critter c1, Critter c2) {
+		//determine which critters want to attack and give them an attack power number
+		boolean c1fight = c1.fight(c2.toString()); 
+		boolean c2fight = c2.fight(c1.toString());
+		int c1Attack = 0;
+		int c2Attack = 0;
+		
+	
+		if (c1.getEnergy()>0 && c1fight){
+			c1Attack = Critter.getRandomInt(c1.getEnergy());
+		}else if (c2.getEnergy()>0 && c2fight){
+			c2Attack = Critter.getRandomInt(c2.getEnergy());
+		}else if (c2.getEnergy()<=0){
+			c2.energy=(0);
+		}else if (c1.getEnergy()<=0){
+			c1.energy=(0);
+		}
+		
+		//use attack power number to determine which critter wins 
+		//winner retains energy and is awarded 1/2 losers energy. Loser dies (Energy is set to <= 0).
+		if(c1Attack >= c2Attack){
+			int c1Energy = c1.getEnergy() + (c2.getEnergy()/2);
+			c1.energy=(c1Energy);
+			c2.energy=(0);
+		}else if(c1Attack==0 && c2Attack==0){
+			//Algae overlapping 
+			c1.energy=(0);
+		}else{
+			int c2Energy = c2.getEnergy() + (c1.getEnergy()/2);
+			c2.energy=(c2Energy);
+			c1.energy=(0);
+		}
+	}
+	/**
+	 * subtracts rest_energy
+	 * clears dead critters from critterworld
+	 * returns updated list 
+	 * 
+	 * @return
+	 */
+	
+	private static List<Critter> clearDead(){ 
+		Iterator I=CritterWorld.critterCollection.iterator();
+		Critter current;
+		while(I.hasNext()){
+			current=(Critter) I.next();
+			int energy= current.getEnergy();
+			energy=energy-Params.rest_energy_cost;
+			current.energy=(energy);
+			if (energy<=0){
+				I.remove(); 
+			}
+		}
+		return CritterWorld.critterCollection; 
 	}
 	
-	protected void setX_coord(int new_x_coord) {
-		x_coord = new_x_coord;
-	}
-	
-	protected void setY_coord(int new_y_coord) {
-		y_coord = new_y_coord;
-	}
 	
 	/**
 	 *invoke doTimeStep for each critter in critterworld
@@ -207,7 +321,7 @@ public abstract class Critter {
 		while(critterIter.hasNext()){
 			current=(Critter) critterIter.next();
 			current.doTimeStep();
-			current.setEnergy(current.getEnergy()-Params.rest_energy_cost);
+			current.energy=(current.getEnergy()-Params.rest_energy_cost);
 		}
 		//if more than one critter in space, 
 		//encounter
@@ -230,15 +344,15 @@ public abstract class Critter {
 		Critter curr; 
 		while(critterIter.hasNext()){
 			curr=(Critter) I.next();
-			curr.setEnergy(curr.getEnergy()-Params.rest_energy_cost);
+			curr.energy=(curr.getEnergy()-Params.rest_energy_cost);
 		}
 		
 		//adding algae   //ERROR HERE!!!! TODO the rest energies aren't subtracting, algae adding too much energy
 		for (int k=0; k<Params.refresh_algae_count; k++){
 			Critter offspring=new Algae(); 
-			offspring.setEnergy(Params.start_energy);
-			offspring.setX_coord(getRandomInt(Params.world_width));  
-			offspring.setY_coord(getRandomInt(Params.world_height));
+			offspring.energy=(Params.start_energy);
+			offspring.x_coord=(getRandomInt(Params.world_width));  
+			offspring.y_coord=(getRandomInt(Params.world_height));
 			CritterWorld.critterCollection.add(offspring);
 		}
 		
@@ -252,11 +366,60 @@ public abstract class Critter {
 		Critter.clearDead(); //rest energy and clear dead
 	}
 	
-	
+	/**displayWorld()
+	 * create a matrix of values height x width
+	 * prints top border
+	 * for each critter in critter world
+	 * 		prints each position [row][col] of grid
+	 * end
+	 * prints bottom border
+	 * print matrix
+	 */
+	static String world[][]; ////TODO figure out how to make the world seeable from look (cannot access
 	public static void displayWorld() {
-		//should be different
+	//	String array[][]=new String[Params.world_width][Params.world_height];  //height is rows, width is cols
+		 world=new  String[Params.world_width][Params.world_height]; 
+		Iterator I= CritterWorld.critterCollection.iterator(); 
+		Critter current; 
+		String word;
+		while(I.hasNext()){
+			current=(Critter) I.next();
+			int x=current.getEnergy();
+		//	System.out.println("Energy: " + current.getClass()+ " "+ x);  //DEBUG
+			world[current.x_coord][current.y_coord]=current.toString();
+			
+		}
+
+		
+		//printing first border
+		System.out.print("+"); //not println so won't have --- on a new line
+		for (int i=0; i<Params.world_width; i++){
+			System.out.print("-"); //TODO don't know if this has spaces
+		}
+		System.out.println("+"); //println moves cursor to new line after printing "+"
+		
+		//printing grid
+		for (int i=0; i<Params.world_height; i++){
+			System.out.print("|"); //side border
+			for (int j=0; j<Params.world_width; j++){ //prints each row
+				if(world[j][i]==null){
+					System.out.print(" "); 
+				}else{
+					System.out.print(world[j][i]); 
+				}
+			}
+			System.out.println("|");
+		}
+		
+		//bottom border
+		System.out.print("+"); 
+		for (int i=0; i<Params.world_width; i++){
+			System.out.print("-");
+		}
+		System.out.println("+"); 		
 	}
 	
+
 	/**
 	 * create and initialize a Critter subclass.
 	 * critter_class_name must be the unqualified name of a concrete subclass of Critter, if not,
@@ -274,7 +437,7 @@ public abstract class Critter {
 		Class critterType; 
 		String name="";
 		try { 
-			name=name.concat("assignment4."+critter_class_name);
+			name=name.concat("assignment5."+critter_class_name);
 			critterType = Class.forName(name); 
 			critterInstance =  (Critter) critterType.newInstance(); 
 		} catch (ClassNotFoundException e) {
@@ -285,14 +448,15 @@ public abstract class Critter {
 			return;
 		}
 		
-		(critterInstance).setX_coord(getRandomInt(Params.world_width));
-		(critterInstance).setY_coord(getRandomInt(Params.world_height));
-		(critterInstance).setEnergy(Params.start_energy);
+		(critterInstance).x_coord=(getRandomInt(Params.world_width));
+		(critterInstance).y_coord=(getRandomInt(Params.world_height));
+		(critterInstance).energy=(Params.start_energy);
 		
 		CritterWorld.critterCollection.add(critterInstance); //ADDING CRITTER
-				
+		
+		//TODO if critter is reproduced, energy reset in reproduce fxn
+		
 	}
-	
 	
 	/**
 	 * Gets a list of critters of a specific type.
@@ -318,7 +482,6 @@ public abstract class Critter {
 		
 		return result;
 	}
-	
 	
 	/**
 	 * Prints out how many Critters of each type there are on the board.
@@ -381,6 +544,7 @@ public abstract class Critter {
 		 * implemented for grading tests to work.
 		 */
 		protected static List<Critter> getPopulation() {
+			population=CritterWorld.critterCollection; 
 			return population;
 		}
 		
@@ -396,29 +560,6 @@ public abstract class Critter {
 	}
 	
 	/**
-	 * subtracts rest_energy
-	 * clears dead critters from critterworld
-	 * returns updated list 
-	 * 
-	 * @return
-	 */
-	
-	private static List<Critter> clearDead(){ 
-		Iterator I=CritterWorld.critterCollection.iterator();
-		Critter current;
-		while(I.hasNext()){
-			current=(Critter) I.next();
-			int energy= current.getEnergy();
-			energy=energy-Params.rest_energy_cost;
-			current.setEnergy(energy);
-			if (energy<=0){
-				I.remove(); 
-			}
-		}
-		return CritterWorld.critterCollection; 
-	}
-	
-	/**
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
@@ -428,57 +569,9 @@ public abstract class Critter {
 			current=(Critter) I.next();
 			I.remove();
 		}
-	}
-	/**
-	 * Check to see if a critter (this) is in the same position as another critter (c2)
-	 * @param c2
-	 * @return
-	 */
-	public boolean isSamePostion(Critter c2) {
-		if ( (this.x_coord == c2.x_coord) && (this.y_coord == c2.y_coord)){
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	/**
-	 * Resolve encounter between two critters that occupy the same location
-	 * @param c1
-	 * @param c2
-	 */
-	private static void resolveEncounter(Critter c1, Critter c2) {
-		//determine which critters want to attack and give them an attack power number
-		boolean c1fight = c1.fight(c2.toString()); 
-		boolean c2fight = c2.fight(c1.toString());
-		int c1Attack = 0;
-		int c2Attack = 0;
 		
+	}
 	
-		if (c1.getEnergy()>0 && c1fight){
-			c1Attack = Critter.getRandomInt(c1.getEnergy());
-		}else if (c2.getEnergy()>0 && c2fight){
-			c2Attack = Critter.getRandomInt(c2.getEnergy());
-		}else if (c2.getEnergy()<=0){
-			c2.setEnergy(0);
-		}else if (c1.getEnergy()<=0){
-			c1.setEnergy(0);
-		}
-		
-		//use attack power number to determine which critter wins 
-		//winner retains energy and is awarded 1/2 losers energy. Loser dies (Energy is set to <= 0).
-		if(c1Attack >= c2Attack){
-			int c1Energy = c1.getEnergy() + (c2.getEnergy()/2);
-			c1.setEnergy(c1Energy);
-			c2.setEnergy(0);
-		}else if(c1Attack==0 && c2Attack==0){
-			//Algae overlapping 
-			c1.setEnergy(0);
-		}else{
-			int c2Energy = c2.getEnergy() + (c1.getEnergy()/2);
-			c2.setEnergy(c2Energy);
-			c1.setEnergy(0);
-		}
-	}
+	
 	
 }

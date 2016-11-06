@@ -1,4 +1,4 @@
-/* CRITTERS <MyCritter2.java>
+/* CRITTERS <MyCritter4.java>
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
  * <Stephany Tsai>
@@ -13,32 +13,23 @@
 
 /*
 
- *MyCritter2 runs in a random direction at each time step. 
- *On the board, it will show as a "2". It
- *do not reproduce. They will always fight when encountered.  
+ *MyCritter3 walks in the 1 direction each time step.
+ *They do not reproduce. They will always fight 
+ *when encountered. They will show on the board as a "3".  
  */
 package assignment5;
 
-public class MyCritter2 extends Critter{
-	
-	public int dir;
-	// Tiger constructor
-	public MyCritter2() {
-		dir = Critter.getRandomInt(8);
-	}
-	
+public class Critter3 extends Critter {
 	@Override
 	public String toString() {
-		return "2";
+		return "3"; 
 	}
 	
-	
-	// Runs in direction 7 and uses amt of energy in run_energy_cost
 	@Override
 	public void doTimeStep() {
 		// TODO Auto-generated method stub
-		this.run(dir); 
-		
+	
+		this.walk(1); //energy level reduced in walk function
 	}
 
 	@Override
@@ -52,5 +43,7 @@ public class MyCritter2 extends Critter{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+
 
 }

@@ -1,4 +1,5 @@
-* MyCritter4 walks in a random direction each time step if its 
+/*
+ * MyCritter4 walks in a random direction each time step if its 
  * energy is less than or equal to 150. Otherwise, it will
  * reproduce and the offspring will be in the space to the 
  * right of it parent. MyCritter4 will be shown with an "4". MyCritter4 
@@ -6,12 +7,12 @@
  */
 package assignment5;
 
-public class MyCritter4 extends Critter {
+public class Critter4 extends Critter {
 	
 	public int dir;
 	
 	// Lion constructor
-	public MyCritter4() {
+	public Critter4() {
 		dir = Critter.getRandomInt(8);
 	}
 	
@@ -27,7 +28,7 @@ public class MyCritter4 extends Critter {
 		// TODO Auto-generated method stub
 		
 		if (this.getEnergy()>150){
-			MyCritter4 offspring=new MyCritter4();
+			Critter4 offspring=new Critter4();
 			this.reproduce(offspring, 0);
 		}else{
 			this.walk(dir);
@@ -47,4 +48,3 @@ public class MyCritter4 extends Critter {
 	}
 
 }
-

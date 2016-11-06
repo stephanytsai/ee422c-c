@@ -1,34 +1,122 @@
-package assignment5;
-	
-import javafx.application.Application;
+/* CRITTERS <Main.java>
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * <Stephany Tsai>
+ * <st26536>
+ * <16445>
+ * <Rajan Makanji>
+ * <rm45378>
+ * <16445>
+ * Slip days used: <0>
+ * Fall 2016
+ */
+
+package assignment5; // cannot be in default package
+import java.util.Scanner;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import javafx.application.Application; 
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane; 
 import javafx.stage.Stage;
 
-public class Main extends Application {
-	static GridPane grid = new GridPane();
+/*
+ * Usage: java <pkgname>.Main <input file> test
+ * input file is optional.  If input file is specified, the word 'test' is optional.
+ * May not use 'test' argument without specifying input file.
+ */
+public class Main{
 
-	@Override
-	public void start(Stage primaryStage) {
-		try {			
+    static Scanner kb;	// scanner connected to keyboard input, or input file
+    private static String inputFile;	// input file, used instead of keyboard input if specified
+    static ByteArrayOutputStream testOutputString;	// if test specified, holds all console output
+    private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
+    private static boolean DEBUG = false; // Use it or not, as you wish!
+    static PrintStream old = System.out;	// if you want to restore output to console
 
-			grid.setGridLinesVisible(true);
 
-			Scene scene = new Scene(grid, 500, 500);
-			primaryStage.setScene(scene);
-			
-			primaryStage.show();
-			
-			// Paints the icons.
-			Painter.paint();
-			
-		} catch(Exception e) {
-			e.printStackTrace();		
-		}
-	}
+    
+    // Gets the package name.  The usage assumes that Critter and its subclasses are all in the same package.
+    static {
+        myPackage = Critter.class.getPackage().toString().split(" ")[1];
+    }
+   
 	
-	public static void main(String[] args) {
-			
-		launch(args);
-	}
+    /**
+     * Main method.
+     * @param args args can be empty.  If not empty, provide two parameters -- the first is a file name, 
+     * and the second is test (for test output, where all output to be directed to a String), or nothing.
+     * @throws InvalidCritterException 
+     * @throws IllegalAccessException 
+     * @throws ClassNotFoundException 
+     * @throws InstantiationException 
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
+     */
+    public static void main(String[] args)  { 
+        if (args.length != 0) {
+            try {
+                inputFile = args[0];
+                kb = new Scanner(new File(inputFile));			
+            } catch (FileNotFoundException e) {
+                System.out.println("USAGE: java Main OR java Main <input file> <test output>");
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                System.out.println("USAGE: java Main OR java Main <input file>  <test output>");
+            }
+            if (args.length >= 2) {
+                if (args[1].equals("test")) { // if the word "test" is the second argument to java
+                    // Create a stream to hold the output
+                    testOutputString = new ByteArrayOutputStream();
+                    PrintStream ps = new PrintStream(testOutputString);
+                    // Save the old System.out.
+                    old = System.out;
+                    // Tell Java to use the special stream; all console output will be redirected here from now
+                    System.setOut(ps);
+                }
+            }
+        } else { // if no arguments to main
+            kb = new Scanner(System.in); // use keyboard and console
+        }
+
+        /* Do not alter the code above for your submission. */
+        /* Write your code below. */
+        String userinput;
+        String[] inputArray; //holds inputs
+        System.out.print("critters>");
+        CritterWorld world=new CritterWorld();
+        boolean quit=false; 
+        
+        while(kb.hasNext()){
+        	userinput= kb.nextLine();
+           	userinput=userinput.trim();
+        	if (userinput.isEmpty()){ //accounts for new line before command
+        		continue; 
+        	}
+        	inputArray=userinput.split("\\s+"); 
+        	if(!Help.validInput(inputArray)){
+        		System.out.println("invalid command: "+userinput);		
+                System.out.print("critters>");
+        		continue;
+        	}
+        	try {
+				if(Help.implementInput(inputArray, userinput)){  //check order
+					break;
+				}
+			} catch (InstantiationException | ClassNotFoundException | IllegalAccessException
+					| InvalidCritterException e) {
+				//does nothing if caught, this replaces the change to main signature
+			}
+        	System.out.print("critters>");
+        }
+        /* Write your code above */
+        System.out.flush(); 
+
+    }
+
+
+
 }
