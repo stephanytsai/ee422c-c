@@ -53,9 +53,9 @@ public abstract class Critter {
 		int x_hold=this.x_coord; 
 		int y_hold=this.y_coord; 
 		if (steps){
-			num_steps=2;
-		}else{
 			num_steps=1;
+		}else{
+			num_steps=2;
 		}
 		
 		if (direction==0){
@@ -86,14 +86,22 @@ public abstract class Critter {
 			y_hold-=num_steps;
 			y_hold= Math.floorMod(y_hold, Params.world_height);
 		}else if(direction==7){
-			x_hold-=num_steps;
+			x_hold+=num_steps;
 			y_hold-=num_steps;
 			x_hold= Math.floorMod(x_hold, Params.world_width);
 			y_hold= Math.floorMod(y_hold, Params.world_height);
 		}
 		
-		if (world[x_hold][y_hold]!=null){
-			return world[x_hold][y_hold];
+		this.energy=this.energy-Params.look_energy_cost;
+		Iterator critterIter= critterCollectionCopy.iterator(); 
+		Critter current; 
+		while(critterIter.hasNext()){
+			current=(Critter) critterIter.next();
+			System.out.println("current= "+ current.x_coord+ " "+ current.y_coord+" = "+ current.toString()); //debug
+			if(current.x_coord==x_hold && current.y_coord==y_hold){
+				System.out.print("----match: "+ current.x_coord+ " "+ current.y_coord); //debug
+				return current.toString();
+			}
 		}
 		return "";
 	}
@@ -120,6 +128,7 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 	
+
 	protected final void walk(int direction) {
 		if (direction==0){
 			this.x_coord++;
@@ -288,15 +297,15 @@ public abstract class Critter {
 	 */
 	
 	private static List<Critter> clearDead(){ 
-		Iterator I=CritterWorld.critterCollection.iterator();
+		Iterator Ia=CritterWorld.critterCollection.iterator();
 		Critter current;
-		while(I.hasNext()){
-			current=(Critter) I.next();
+		while(Ia.hasNext()){
+			current=(Critter) Ia.next();
 			int energy= current.getEnergy();
 			energy=energy-Params.rest_energy_cost;
 			current.energy=(energy);
 			if (energy<=0){
-				I.remove(); 
+				Ia.remove(); 
 			}
 		}
 		return CritterWorld.critterCollection; 
@@ -315,7 +324,16 @@ public abstract class Critter {
 	 * @throws ClassNotFoundException 
 	 * @throws InstantiationException 
 	 */
+	//make global critter collection here
+	public static List<Critter> critterCollectionCopy = null;
+	
 	public static void worldTimeStep() throws InstantiationException, ClassNotFoundException, IllegalAccessException, InvalidCritterException {
+		critterCollectionCopy=new java.util.ArrayList<Critter>();
+		System.out.println("crittercollectioncopy before world time step:--------");
+		for (Critter c:CritterWorld.critterCollection){
+			critterCollectionCopy.add(c);
+			System.out.println(c.x_coord+" "+c.y_coord+" "+c.toString()); //debug
+		}
 		Iterator critterIter= CritterWorld.critterCollection.iterator(); 
 		Critter current; 
 		while(critterIter.hasNext()){
@@ -347,7 +365,7 @@ public abstract class Critter {
 			curr.energy=(curr.getEnergy()-Params.rest_energy_cost);
 		}
 		
-		//adding algae   //ERROR HERE!!!! TODO the rest energies aren't subtracting, algae adding too much energy
+		//adding algae   
 		for (int k=0; k<Params.refresh_algae_count; k++){
 			Critter offspring=new Algae(); 
 			offspring.energy=(Params.start_energy);
@@ -375,19 +393,20 @@ public abstract class Critter {
 	 * prints bottom border
 	 * print matrix
 	 */
-	static String world[][]; ////TODO figure out how to make the world seeable from look (cannot access
 	public static void displayWorld() {
-	//	String array[][]=new String[Params.world_width][Params.world_height];  //height is rows, width is cols
-		 world=new  String[Params.world_width][Params.world_height]; 
+		String array[][]=new String[Params.world_width][Params.world_height];  //height is rows, width is cols
+		// array=new  String[Params.world_width][Params.world_height]; 
 		Iterator I= CritterWorld.critterCollection.iterator(); 
 		Critter current; 
 		String word;
 		while(I.hasNext()){
+			System.out.println("now");
 			current=(Critter) I.next();
 			int x=current.getEnergy();
 		//	System.out.println("Energy: " + current.getClass()+ " "+ x);  //DEBUG
-			world[current.x_coord][current.y_coord]=current.toString();
-			
+			if (x>0){
+				array[current.x_coord][current.y_coord]=current.toString();
+			}
 		}
 
 		
@@ -402,10 +421,10 @@ public abstract class Critter {
 		for (int i=0; i<Params.world_height; i++){
 			System.out.print("|"); //side border
 			for (int j=0; j<Params.world_width; j++){ //prints each row
-				if(world[j][i]==null){
+				if(array[j][i]==null){
 					System.out.print(" "); 
 				}else{
-					System.out.print(world[j][i]); 
+					System.out.print(array[j][i]); 
 				}
 			}
 			System.out.println("|");
