@@ -26,6 +26,8 @@ public class Crit2Main extends Application {
 	static GridPane gpMenu2 = new GridPane();
 	static GridPane gpWorld = new GridPane();
 	static GridPane gpStart = new GridPane();
+	public int turnCount=0;
+	
 	
 	@Override 
 	public void start(Stage primaryStage) {
@@ -44,8 +46,8 @@ public class Crit2Main extends Application {
 			border.setTop(gpMenu);
 			border.setCenter(gpWorld);
 			border.setBottom(gpMenu2);
-			Scene startScene = new Scene(gpStart, 800, 600);
-			Scene scene = new Scene(border, 800, 600); 
+			Scene startScene = new Scene(gpStart, 1000, 650);
+			Scene scene = new Scene(border, 1000, 650); 
 			
 			
 			
@@ -111,7 +113,7 @@ public class Crit2Main extends Application {
 	        });
 	        
 	        Button clear = new Button();
-	        clear.setText("Clear Critters");
+	        clear.setText("Start Over");
 	        clear.setOnAction(new EventHandler<ActionEvent>() {
 		       	 
 	            @Override
@@ -128,7 +130,7 @@ public class Crit2Main extends Application {
 		       	 
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	gpWorld.setStyle("-fx-background-color: black;");
+	            	gpWorld.setStyle("-fx-background-color: black; -fx-border-color: white; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
 	            }
 	        });
 	        
@@ -138,7 +140,7 @@ public class Crit2Main extends Application {
 		       	 
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	gpWorld.setStyle("-fx-background-color: palegreen;");
+	            	gpWorld.setStyle("-fx-background-color: palegreen; -fx-border-color: black; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
 	            }
 	        });
 	        
@@ -230,7 +232,12 @@ public class Crit2Main extends Application {
 	            }
 	        });
 	        
+	        
+	        
 	     // Step btn will call doTimeStep
+	        TextField turns = new TextField();
+	        turns.setText(Integer.toString(turnCount));
+	        
 	        TextField stepCount = new TextField();
 			stepCount.setText("Enter # Turns");
 	        
@@ -242,11 +249,94 @@ public class Crit2Main extends Application {
 	            public void handle(ActionEvent event) {
 	                System.out.println("Critters will be updated"); //actually call doTimeStep
 	                int count=0;
-	    	        int numSteps = Integer.parseInt(stepCount.getText());
+	                int numSteps;
+	                
+	                try{
+	    	        numSteps = Integer.parseInt(stepCount.getText());
+	                }
+	                catch (NumberFormatException e){
+	                	numSteps = 1;
+	                }
 	    	        
 	    	        for(count=0;count<numSteps;count++){
 	    	        	try {
 							Critter.worldTimeStep();
+							gpWorld.getChildren().clear(); //clears board before new locations are shown
+			                
+			                Iterator I = CritterWorld.critterCollection.iterator();
+			                Critter current;
+			                int x;
+			                int y;
+			                Critter.CritterShape shape;
+			                while(I.hasNext()){
+			                	current = (Critter) I.next();
+			                	x = current.getX();
+			                	y = current.getY();
+			                	shape = current.viewShape();
+			                	
+			                	switch (shape) {
+			                    case CIRCLE:
+			                    	Circle cir = new Circle(x,y,5);
+			                    	cir.setStroke(current.viewColor());
+			                    	cir.setFill(current.viewColor());
+			        				gpWorld.add(cir, x, y);
+			                        break;
+			                            
+			                    case SQUARE:
+			                    	Rectangle rec = new Rectangle(x,y,10,10);
+			                    	rec.setStroke(current.viewColor());
+			                    	rec.setFill(current.viewColor());
+			        				gpWorld.add(rec, x, y);
+			                        break;
+			                                 
+			                    case TRIANGLE: 
+			                    	Polygon tri = new Polygon();
+			                    	tri.setStroke(current.viewColor());
+			                    	tri.setFill(current.viewColor());
+			        		        tri.getPoints().addAll(new Double[]{
+			        		            0.0, 0.0,
+			        		            10.0, 0.0,
+			        		            5.0, 10.0 });
+			        				gpWorld.add(tri, x, y);
+			                        break;
+			                        
+			                    case DIAMOND: 
+			                    	Polygon diam = new Polygon();
+			                    	diam.setStroke(current.viewColor());
+			                    	diam.setFill(current.viewColor());
+			     			       	diam.getPoints().addAll(new Double[]{
+			     			           5.0, 0.0,
+			     			           10.0, 5.0,
+			     			           5.0, 10.0,
+			     			           0.0, 5.0  });
+			     			       	gpWorld.add(diam, x, y);
+			                        break;
+			                        
+			                    case STAR: 
+			                    	Polygon star = new Polygon();
+			                    	star.setStroke(current.viewColor());
+			                    	star.setFill(current.viewColor());
+			        		        star.getPoints().addAll(new Double[]{
+			        		            5.0, 0.0,
+			        		            6.0, 4.0,
+			        		            10.0, 5.0,
+			        		            7.0, 6.0,
+			        		            9.0, 9.0,
+			        		            5.0, 8.0,
+			        		            1.0, 9.0,
+			        		            3.0, 6.0, 
+			        		            0.0, 5.0,
+			        		            4.0, 4.0  });
+			        				gpWorld.add(star, x, y);
+			                        break;
+			                               
+			                	}
+			                	
+			                	
+			                }
+							turnCount++;
+							turns.setText(Integer.toString(turnCount));
+							
 							//maybe add animation here?
 						} catch (InstantiationException | ClassNotFoundException | IllegalAccessException
 							| InvalidCritterException e) {
@@ -287,6 +377,7 @@ public class Crit2Main extends Application {
 	        gpMenu.add(critNum, 3, 1);
 	        gpMenu.add(step, 4, 1);
 	        gpMenu.add(stepCount, 5, 1);
+	        gpMenu.add(turns, 6, 1);
 	        
 	        
 	        //second row
@@ -294,9 +385,9 @@ public class Crit2Main extends Application {
 	        gpMenu2.setHgap(20);
 	        gpMenu2.setAlignment(Pos.BOTTOM_CENTER);
 	        gpMenu2.add(show, 1, 2);
-	        gpMenu2.add(clear, 2, 2);
-	        gpMenu2.add(day, 3, 2);
-	        gpMenu2.add(night, 4, 2);
+	        gpMenu2.add(day, 2, 2);
+	        gpMenu2.add(night, 3, 2);
+	        gpMenu2.add(clear, 4, 2);
 	        gpMenu2.add(quitGame, 5, 2);
 			//primaryStage.setScene(scene);
 			primaryStage.show();
