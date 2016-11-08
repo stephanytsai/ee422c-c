@@ -127,7 +127,8 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
-	
+	protected int getX() { return x_coord; }
+	protected int getY() { return y_coord; }
 
 	protected final void walk(int direction) {
 		if (direction==0){
@@ -393,7 +394,7 @@ public abstract class Critter {
 	 * prints bottom border
 	 * print matrix
 	 */
-	public static void displayWorld() {
+	public static String[][] displayWorld() {
 		String array[][]=new String[Params.world_width][Params.world_height];  //height is rows, width is cols
 		// array=new  String[Params.world_width][Params.world_height]; 
 		Iterator I= CritterWorld.critterCollection.iterator(); 
@@ -408,8 +409,10 @@ public abstract class Critter {
 				array[current.x_coord][current.y_coord]=current.toString();
 			}
 		}
-
 		
+		return array;
+
+		/*
 		//printing first border
 		System.out.print("+"); //not println so won't have --- on a new line
 		for (int i=0; i<Params.world_width; i++){
@@ -435,7 +438,9 @@ public abstract class Critter {
 		for (int i=0; i<Params.world_width; i++){
 			System.out.print("-");
 		}
-		System.out.println("+"); 		
+		System.out.println("+"); 
+		*/
+				
 	}
 	
 
