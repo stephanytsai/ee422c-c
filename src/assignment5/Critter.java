@@ -404,7 +404,7 @@ public abstract class Critter {
 			current=(Critter) I.next();
 			int x=current.getEnergy();
 		//	System.out.println("Energy: " + current.getClass()+ " "+ x);  //DEBUG
-			if (x>0){
+			if (x>0 && array[current.x_coord][current.y_coord]==null){
 				array[current.x_coord][current.y_coord]=current.toString();
 			}
 		}
