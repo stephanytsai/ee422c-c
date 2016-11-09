@@ -8,6 +8,9 @@ import assignment5.Critter;
 import assignment5.CritterWorld;
 import assignment5.InvalidCritterException;
 import assignment5.Params;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
@@ -394,7 +397,85 @@ public abstract class Critter {
 	 * prints bottom border
 	 * print matrix
 	 */
-	public static String[][] displayWorld() {
+	@SuppressWarnings("restriction")
+	public static void displayWorld(){
+		Iterator I = CritterWorld.critterCollection.iterator();
+        Critter current;
+        int x;
+        int y;
+        Critter.CritterShape shape;
+        while(I.hasNext()){
+        	current = (Critter) I.next();
+        	x = current.getX();
+        	y = current.getY();
+        	shape = current.viewShape();
+        	
+        	switch (shape) {
+            case CIRCLE:
+            	Circle cir = new Circle(x,y,5);
+            	cir.setStroke(current.viewColor());
+            	cir.setFill(current.viewColor());
+				Crit2Main.gpWorld.add(cir, x, y);
+                break;
+                    
+            case SQUARE:
+            	Rectangle rec = new Rectangle(x,y,10,10);
+            	rec.setStroke(current.viewColor());
+            	rec.setFill(current.viewColor());
+            	Crit2Main.gpWorld.add(rec, x, y);
+                break;
+                         
+            case TRIANGLE: 
+            	Polygon tri = new Polygon();
+            	tri.setStroke(current.viewColor());
+            	tri.setFill(current.viewColor());
+		        tri.getPoints().addAll(new Double[]{
+		            0.0, 0.0,
+		            10.0, 0.0,
+		            5.0, 10.0 });
+		        Crit2Main.gpWorld.add(tri, x, y);
+                break;
+                
+            case DIAMOND: 
+            	Polygon diam = new Polygon();
+            	diam.setStroke(current.viewColor());
+            	diam.setFill(current.viewColor());
+			       	diam.getPoints().addAll(new Double[]{
+			           5.0, 0.0,
+			           10.0, 5.0,
+			           5.0, 10.0,
+			           0.0, 5.0  });
+			       	Crit2Main.gpWorld.add(diam, x, y);
+                break;
+                
+            case STAR: 
+            	Polygon star = new Polygon();
+            	star.setStroke(current.viewColor());
+            	star.setFill(current.viewColor());
+		        star.getPoints().addAll(new Double[]{
+		            5.0, 0.0,
+		            6.0, 4.0,
+		            10.0, 5.0,
+		            7.0, 6.0,
+		            9.0, 9.0,
+		            5.0, 8.0,
+		            1.0, 9.0,
+		            3.0, 6.0, 
+		            0.0, 5.0,
+		            4.0, 4.0  });
+		        Crit2Main.gpWorld.add(star, x, y);
+                break;
+                       
+        	} //end of switch
+        } //end of while loop that iterates through critterCollection
+        
+	}
+	
+	
+	
+	
+	
+	public static String[][] displayWorldOLD() {
 		String array[][]=new String[Params.world_width][Params.world_height];  //height is rows, width is cols
 		// array=new  String[Params.world_width][Params.world_height]; 
 		Iterator I= CritterWorld.critterCollection.iterator(); 

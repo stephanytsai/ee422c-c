@@ -21,11 +21,11 @@ import javafx.scene.layout.*;
 
 @SuppressWarnings("restriction")
 public class Crit2Main extends Application {
-	static BorderPane border = new BorderPane();
-	static GridPane gpMenu = new GridPane();
-	static GridPane gpMenu2 = new GridPane();
-	static GridPane gpWorld = new GridPane();
-	static GridPane gpStart = new GridPane();
+	public static BorderPane border = new BorderPane();
+	public static GridPane gpMenu = new GridPane();
+	public static GridPane gpMenu2 = new GridPane();
+	public static GridPane gpWorld = new GridPane();
+	public static GridPane gpStart = new GridPane();
 	public int turnCount=0;
 	
 	
@@ -154,80 +154,7 @@ public class Crit2Main extends Application {
 	                System.out.println("Show Critters"); //actually display world
 	                gpWorld.getChildren().clear(); //clears board before new locations are shown
 	                
-	                Iterator I = CritterWorld.critterCollection.iterator();
-	                Critter current;
-	                int x;
-	                int y;
-	                Critter.CritterShape shape;
-	                while(I.hasNext()){
-	                	current = (Critter) I.next();
-	                	x = current.getX();
-	                	y = current.getY();
-	                	shape = current.viewShape();
-	                	
-	                	switch (shape) {
-	                    case CIRCLE:
-	                    	Circle cir = new Circle(x,y,5);
-	                    	cir.setStroke(current.viewColor());
-	                    	cir.setFill(current.viewColor());
-	        				gpWorld.add(cir, x, y);
-	                        break;
-	                            
-	                    case SQUARE:
-	                    	Rectangle rec = new Rectangle(x,y,10,10);
-	                    	rec.setStroke(current.viewColor());
-	                    	rec.setFill(current.viewColor());
-	        				gpWorld.add(rec, x, y);
-	                        break;
-	                                 
-	                    case TRIANGLE: 
-	                    	Polygon tri = new Polygon();
-	                    	tri.setStroke(current.viewColor());
-	                    	tri.setFill(current.viewColor());
-	        		        tri.getPoints().addAll(new Double[]{
-	        		            0.0, 0.0,
-	        		            10.0, 0.0,
-	        		            5.0, 10.0 });
-	        				gpWorld.add(tri, x, y);
-	                        break;
-	                        
-	                    case DIAMOND: 
-	                    	Polygon diam = new Polygon();
-	                    	diam.setStroke(current.viewColor());
-	                    	diam.setFill(current.viewColor());
-	     			       	diam.getPoints().addAll(new Double[]{
-	     			           5.0, 0.0,
-	     			           10.0, 5.0,
-	     			           5.0, 10.0,
-	     			           0.0, 5.0  });
-	     			       	gpWorld.add(diam, x, y);
-	                        break;
-	                        
-	                    case STAR: 
-	                    	Polygon star = new Polygon();
-	                    	star.setStroke(current.viewColor());
-	                    	star.setFill(current.viewColor());
-	        		        star.getPoints().addAll(new Double[]{
-	        		            5.0, 0.0,
-	        		            6.0, 4.0,
-	        		            10.0, 5.0,
-	        		            7.0, 6.0,
-	        		            9.0, 9.0,
-	        		            5.0, 8.0,
-	        		            1.0, 9.0,
-	        		            3.0, 6.0, 
-	        		            0.0, 5.0,
-	        		            4.0, 4.0  });
-	        				gpWorld.add(star, x, y);
-	                        break;
-	                               
-	                	}
-	                	
-	                	
-	                }
-	                
-	                
-	                
+	                Critter.displayWorld(); //calls display world which adds shapes to gpWorld 
 	                
 	            }
 	        });
