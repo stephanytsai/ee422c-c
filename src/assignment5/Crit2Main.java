@@ -2,6 +2,7 @@ package assignment5;
 
 import java.awt.Color;
 import java.util.Iterator;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -45,9 +46,9 @@ public class Crit2Main extends Application {
 			//gpWorld.setHgap(2);
 			//gpWorld.setVgap(2);
 			primaryStage.setTitle("Welcome to Critter World");
-			border.setTop(gpMenu);
+			border.setLeft(gpMenu);
 			border.setCenter(gpWorld);
-			border.setBottom(gpMenu2);
+			border.setRight(gpMenu2);
 			Scene startScene = new Scene(gpStart, 1000, 650);
 			Scene scene = new Scene(border, 1000, 650); 
 			
@@ -142,7 +143,7 @@ public class Crit2Main extends Application {
 		       	 
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	gpWorld.setStyle("-fx-background-color: palegreen; -fx-border-color: black; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
+	            	gpWorld.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
 	            }
 	        });
 	        
@@ -160,6 +161,22 @@ public class Crit2Main extends Application {
 	                
 	            }
 	        });
+	        
+	        //setSeed button
+	        Button setSeed = new Button();
+	        TextField seed = new TextField();
+	        seed.setText("Seed Value");
+	        setSeed.setText("Seed");
+	        setSeed.setOnAction(new EventHandler<ActionEvent>() {
+		       	 
+	            @Override
+	            public void handle(ActionEvent event) {
+	                System.out.println("Calling setSeed"); //actually call setseed
+	                Critter.setSeed(Integer.parseInt(seed.getText()));
+	            }
+	        });
+	        
+	        
 	        
 	        
 	        
@@ -226,25 +243,29 @@ public class Crit2Main extends Application {
 	       	*/
 	        
 	        //first row
-	        gpMenu.setStyle("-fx-background-color: indigo;");
-	        gpMenu.setAlignment(Pos.TOP_CENTER);
-	        gpMenu.add(makeCrit, 1, 1);
-	        gpMenu.add(critType, 2, 1);
-	        gpMenu.add(critNum, 3, 1);
-	        gpMenu.add(step, 4, 1);
-	        gpMenu.add(stepCount, 5, 1);
-	        gpMenu.add(turns, 6, 1);
+	        gpMenu.setStyle("-fx-background-color: sandybrown;");
+	        gpMenu.setVgap(5);
+	        gpMenu.setPadding(new Insets(5,5,5,5));
+	        //gpMenu.setAlignment(Pos.CENTER);
+	        gpMenu.add(makeCrit, 0, 0);
+	        gpMenu.add(critType, 0, 1);
+	        gpMenu.add(critNum, 0, 2);
+	        gpMenu.add(step, 0, 5);
+	        gpMenu.add(stepCount, 0, 6);
+	        gpMenu.add(turns, 0, 7);
 	        
 	        
 	        //second row
-	        gpMenu2.setStyle("-fx-background-color: indigo;");
-	        gpMenu2.setHgap(20);
-	        gpMenu2.setAlignment(Pos.BOTTOM_CENTER);
-	        gpMenu2.add(show, 1, 2);
-	        gpMenu2.add(day, 2, 2);
-	        gpMenu2.add(night, 3, 2);
-	        gpMenu2.add(clear, 4, 2);
-	        gpMenu2.add(quitGame, 5, 2);
+	        
+	        //gpMenu2.setAlignment(Pos.CENTER);
+	        gpMenu.add(setSeed, 0, 10);
+	        gpMenu.add(seed, 0, 11);
+	        gpMenu.add(show, 0, 14);
+	        gpMenu.add(day, 0, 17);
+	        gpMenu.add(night, 0, 20);
+	        
+	        gpMenu.add(clear, 0, 25);
+	        gpMenu.add(quitGame, 0, 28);
 			//primaryStage.setScene(scene);
 			primaryStage.show();
 		
