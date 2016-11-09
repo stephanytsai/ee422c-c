@@ -32,6 +32,8 @@ public class Crit2Main extends Application {
 	public static GridPane gpMenu2 = new GridPane();
 	public static GridPane gpWorld = new GridPane();
 	public static GridPane gpStart = new GridPane();
+	public static GridPane gpStats = new GridPane();
+	
 	public int turnCount=0;
 	
 	
@@ -52,6 +54,7 @@ public class Crit2Main extends Application {
 			border.setLeft(gpMenu);
 			border.setCenter(gpWorld);
 			border.setRight(gpMenu2);
+			border.setBottom(gpStats);
 			Scene startScene = new Scene(gpStart, 1000, 650);
 			Scene scene = new Scene(border, 1000, 650); 
 			
@@ -179,6 +182,8 @@ public class Crit2Main extends Application {
 	            }
 	        });
 	        
+	        //runStats
+	        TextField statText = new TextField();
 	        Button runStats = new Button();
 	        runStats.setText("Critter Status");
 	        TextField critStat = new TextField();
@@ -188,8 +193,12 @@ public class Crit2Main extends Application {
 		      
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	Help.runStatsHelp(critStat.getText());
-	            	
+	            	gpStats.getChildren().clear();
+	            	String statString;
+	            	statString=Help.runStatsHelp(critStat.getText());
+	            	statText.setText(statString);
+	            	statText.setPrefWidth(statText.getText().length()*7);
+	            	gpStats.add(statText, 0, 0);
 	            }
 	        });
 	        

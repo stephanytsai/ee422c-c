@@ -21,8 +21,9 @@ import assignment5.Critter;
 
 public class Help {
 	
-	public static void runStatsHelp(String a){
+	public static String runStatsHelp(String a){
 		String holder="";
+		String statString="";
 		Class critterType=null;
 		try { 
 			holder=holder.concat("assignment5."+ a);
@@ -45,10 +46,11 @@ public class Help {
 		}
 		
 		try {
-			method_object.invoke(null, instances);
+			statString=(String) method_object.invoke(null, instances);
 		} catch (IllegalArgumentException e) {
 		} catch (InvocationTargetException e) {
 		}catch (IllegalAccessException e){}
+		return statString;
 		
 	}
 	/**
