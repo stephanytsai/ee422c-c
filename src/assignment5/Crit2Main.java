@@ -183,27 +183,13 @@ public class Crit2Main extends Application {
 	        runStats.setText("Critter Status");
 	        TextField critStat = new TextField();
 	        critStat.setText("Critter Type");
-	        setSeed.setOnAction(new EventHandler<ActionEvent>() {
-		       	 
+	        
+	        runStats.setOnAction(new EventHandler<ActionEvent>() {
+		      
 	            @Override
 	            public void handle(ActionEvent event) {
-	            	String holder="";
-	    			Class critterType;
-	    			try { 
-	    				holder=holder.concat("assignment5."+ critStat.getText());
-	    				critterType = Class.forName(holder);
-	    				
-	    				List<Critter> instances=Critter.getInstances(holder);
-	    				Class<?>[] types={List.class};
-	    				Method method_object=null;
-	    				method_object = critterType.getMethod("runStats", types);
-	    				
-	    				method_object.invoke(null, instances);
-	    				
-	    			} catch (ClassNotFoundException e) {
-	    				System.out.println("error processing: "+ critStat.getText());
-	    			
-	    			}
+	            	Help.runStatsHelp(critStat.getText());
+	            	
 	            }
 	        });
 	        
@@ -293,11 +279,13 @@ public class Crit2Main extends Application {
 	        gpMenu.add(setSeed, 0, 10);
 	        gpMenu.add(seed, 0, 11);
 	        gpMenu.add(show, 0, 14);
-	        gpMenu.add(day, 0, 17);
-	        gpMenu.add(night, 0, 20);
+	        gpMenu.add(runStats, 0, 17);
+	        gpMenu.add(critStat, 0, 20);
+	        gpMenu.add(day, 0, 23);
+	        gpMenu.add(night, 0, 26);
 	        
-	        gpMenu.add(clear, 0, 25);
-	        gpMenu.add(quitGame, 0, 28);
+	        gpMenu.add(clear, 0, 30);
+	        gpMenu.add(quitGame, 0, 33);
 			//primaryStage.setScene(scene);
 			primaryStage.show();
 		
