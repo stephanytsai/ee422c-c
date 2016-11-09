@@ -1,5 +1,6 @@
 package assignment5;
 
+import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import assignment5.CritterWorld;
 import assignment5.InvalidCritterException;
 import assignment5.Params;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
@@ -399,6 +401,21 @@ public abstract class Critter {
 	 */
 	@SuppressWarnings("restriction")
 	public static void displayWorld(){
+		
+		int row;
+        int col;
+        
+        for(col=0;col<Params.world_width;col++){
+        	for(row=0;row<Params.world_height;row++){
+        		Rectangle blank = new Rectangle(col,row,10,10);
+        		blank.setStroke(javafx.scene.paint.Color.WHITE);
+            	blank.setFill(javafx.scene.paint.Color.WHITE);
+            	Crit2Main.gpWorld.add(blank, col, row);
+        		
+        	}
+        }
+        
+        
 		Iterator I = CritterWorld.critterCollection.iterator();
         Critter current;
         int x;

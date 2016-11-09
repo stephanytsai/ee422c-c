@@ -1,5 +1,6 @@
 package assignment5;
 
+import java.awt.Color;
 import java.util.Iterator;
 
 import javafx.application.Application;
@@ -16,6 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Line;
 
 
 
