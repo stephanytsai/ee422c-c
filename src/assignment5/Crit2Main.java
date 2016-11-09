@@ -36,7 +36,7 @@ public class Crit2Main extends Application {
 		try {
 			//gpMenu.setGridLinesVisible(true);
 			//gpWorld.setGridLinesVisible(true);
-			gpWorld.setStyle("-fx-background-color: palegreen; -fx-border-color: black; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
+			gpWorld.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
 			//gpWorld.setStyle("-fx-background-color: palegreen, white; -fx-background-insets: 0, 200; -fx-border-color: black; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
 			//gpWorld.setStyle("-fx-background-fill: black, white");
 			//gpWorld.setStyle("-fx-background-insets: 0, 1 ");

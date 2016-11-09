@@ -409,7 +409,7 @@ public abstract class Critter {
         	for(row=0;row<Params.world_height;row++){
         		Rectangle blank = new Rectangle(col,row,10,10);
         		blank.setStroke(javafx.scene.paint.Color.WHITE);
-            	blank.setFill(javafx.scene.paint.Color.WHITE);
+            	blank.setFill(javafx.scene.paint.Color.SANDYBROWN);
             	Crit2Main.gpWorld.add(blank, col, row);
         		
         	}
