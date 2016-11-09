@@ -43,7 +43,7 @@ public class Help {
 		} catch (NoSuchMethodException e) {
 		} catch (SecurityException e) {
 		}
-		System.out.println("method: "+ method_object.toString());
+		
 		try {
 			method_object.invoke(null, instances);
 		} catch (IllegalArgumentException e) {
