@@ -13,7 +13,11 @@
 
 package assignment5;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
+
+import assignment4.Critter;
 
 public class Help {
 	/**
@@ -175,14 +179,30 @@ public class Help {
 			String holder="";
 			Class critterType;
 			try { 
-				holder=holder.concat("assignment5."+a[1]);
+				holder=holder.concat("assignment5."+ a[1]);
 				critterType = Class.forName(holder);
 			} catch (ClassNotFoundException e) {
 				System.out.println("error processing: "+user);
 				return false;
 			}
-			List<Critter> types=Critter.getInstances(holder);
-			Critter.runStats(types);			
+			List<Critter> instances=Critter.getInstances(holder);
+			Class<?>[] types={List.class};
+			Method method_object=null;
+			try {
+				method_object = critterType.getMethod("runStats", types);
+			} catch (NoSuchMethodException e) {
+			} catch (SecurityException e) {
+			}
+			System.out.println("method: "+ method_object.toString());
+			try {
+				method_object.invoke(null, instances);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			
 			return false;
 		}else{
 			System.out.println("error processing: "+ user);
