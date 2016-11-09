@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import assignment4.Critter;
+import assignment5.Critter;
 
 public class Help {
 	/**

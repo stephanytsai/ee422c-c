@@ -1,6 +1,8 @@
 package assignment5;
 
 import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
+import java.lang.reflect.*;
 
 
 
@@ -176,6 +179,35 @@ public class Crit2Main extends Application {
 	            }
 	        });
 	        
+	        Button runStats = new Button();
+	        runStats.setText("Critter Status");
+	        TextField critStat = new TextField();
+	        critStat.setText("Critter Type");
+	        setSeed.setOnAction(new EventHandler<ActionEvent>() {
+		       	 
+	            @Override
+	            public void handle(ActionEvent event) {
+	            	String holder="";
+	    			Class critterType;
+	    			try { 
+	    				holder=holder.concat("assignment5."+ critStat.getText());
+	    				critterType = Class.forName(holder);
+	    				
+	    				List<Critter> instances=Critter.getInstances(holder);
+	    				Class<?>[] types={List.class};
+	    				Method method_object=null;
+	    				method_object = critterType.getMethod("runStats", types);
+	    				
+	    				method_object.invoke(null, instances);
+	    				
+	    			} catch (ClassNotFoundException e) {
+	    				System.out.println("error processing: "+ critStat.getText());
+	    			
+	    			}
+	            }
+	        });
+	        
+	       
 	        
 	        
 	        
