@@ -17,9 +17,40 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import assignment4.Critter;
+import assignment5.Critter;
 
 public class Help {
+	
+	public static void runStatsHelp(String a){
+		String holder="";
+		Class critterType=null;
+		try { 
+			holder=holder.concat("assignment5."+ a);
+			critterType = Class.forName(holder);
+			
+		} catch (ClassNotFoundException e) {
+			System.out.println("error processing: "+a);
+		}
+		List<Critter> instances=null;
+		try {
+			instances = Critter.getInstances(holder);
+		} catch (InvalidCritterException e1) {
+		}
+		Class<?>[] types={List.class};
+		Method method_object=null;
+		try {
+			method_object = critterType.getMethod("runStats", types);
+		} catch (NoSuchMethodException e) {
+		} catch (SecurityException e) {
+		}
+		System.out.println("method: "+ method_object.toString());
+		try {
+			method_object.invoke(null, instances);
+		} catch (IllegalArgumentException e) {
+		} catch (InvocationTargetException e) {
+		}catch (IllegalAccessException e){}
+		
+	}
 	/**
 	 * checks if a word is in a String[]
 	 * @param find
