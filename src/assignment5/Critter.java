@@ -102,9 +102,8 @@ public abstract class Critter {
 		Critter current; 
 		while(critterIter.hasNext()){
 			current=(Critter) critterIter.next();
-			System.out.println("current= "+ current.x_coord+ " "+ current.y_coord+" = "+ current.toString()); //debug
+//			System.out.println("current= "+ current.x_coord+ " "+ current.y_coord+" = "+ current.toString()); //debug
 			if(current.x_coord==x_hold && current.y_coord==y_hold){
-				System.out.print("----match: "+ current.x_coord+ " "+ current.y_coord); //debug
 				return current.toString();
 			}
 		}

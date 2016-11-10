@@ -41,6 +41,7 @@ public class Critter1 extends Critter {
 	@Override
 	public boolean fight(String oponent) {
 		// TODO Auto-generated method stub
+		this.look(1,true); 
 		return true;
 	}
 

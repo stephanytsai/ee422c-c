@@ -38,7 +38,7 @@ public class Critter2 extends Critter{
 	public void doTimeStep() {
 		// TODO Auto-generated method stub
 		String out=this.look(0,true); 
-		System.out.println("looked and saw: "+ out);
+	//	System.out.println("looked and saw: "+ out);
 	}
 
 	@Override
