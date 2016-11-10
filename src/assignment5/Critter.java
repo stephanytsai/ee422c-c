@@ -401,7 +401,7 @@ public abstract class Critter {
 	 */
 	@SuppressWarnings("restriction")
 	public static void displayWorld(){
-		
+		Critter[][] critterArray = displayWorldOLD();
 		double dimension = Math.min(250/Params.world_height, 500/Params.world_width);
 		double polyDim = Math.min(250/Params.world_height, 500/Params.world_width);
 		int row;
@@ -417,85 +417,104 @@ public abstract class Critter {
         	}
         }
         
-        
+        /*
 		Iterator I = CritterWorld.critterCollection.iterator();
         Critter current;
         int x;
         int y;
         Critter.CritterShape shape;
-        while(I.hasNext()){
-        	current = (Critter) I.next();
-        	x = current.getX();
-        	y = current.getY();
-        	shape = current.viewShape();
-        	
-        	switch (shape) {
-            case CIRCLE:
-            	Circle cir = new Circle(x,y,.9*dimension/2);
-            	cir.setStroke(current.viewColor());
-            	cir.setFill(current.viewColor());
-				Crit2Main.gpWorld.add(cir, x, y);
-                break;
+        */
+        int x;
+        int y;
+        Critter.CritterShape shape;
+        int i;
+        int j;
+        Critter current;
+        for(i=0;i<Params.world_width;i++){
+        	for(j=0;j<Params.world_height;j++){
+        		
+        		if(critterArray[i][j]==null){
+        			Rectangle blank = new Rectangle(i,j,dimension,dimension);
+            		blank.setStroke(javafx.scene.paint.Color.WHITE);
+                	blank.setFill(javafx.scene.paint.Color.SANDYBROWN);
+                	Crit2Main.gpWorld.add(blank, i, j);
+        		}
+        		
+        		else{
+        		current = critterArray[i][j];
+        		x = current.getX();
+            	y = current.getY();
+            	shape = current.viewShape();
+            	
+            	switch (shape) {
+                case CIRCLE:
+                	Circle cir = new Circle(i,j,.9*dimension/2);
+                	cir.setStroke(current.viewColor());
+                	cir.setFill(current.viewColor());
+    				Crit2Main.gpWorld.add(cir, i, j);
+                    break;
+                        
+                case SQUARE:
+                	Rectangle rec = new Rectangle(i,j,.9*dimension,.9*dimension);
+                	rec.setStroke(current.viewColor());
+                	rec.setFill(current.viewColor());
+                	Crit2Main.gpWorld.add(rec, i, j);
+                    break;
+                             
+                case TRIANGLE: 
+                	Polygon tri = new Polygon();
+                	tri.setStroke(current.viewColor());
+                	tri.setFill(current.viewColor());
+    		        tri.getPoints().addAll(new Double[]{
+    		        	.1*polyDim, .1*polyDim,
+    		            .9*polyDim, .1*polyDim,
+    		            polyDim/2, .9*polyDim });
+    		        Crit2Main.gpWorld.add(tri, i, j);
+                    break;
                     
-            case SQUARE:
-            	Rectangle rec = new Rectangle(x,y,.9*dimension,.9*dimension);
-            	rec.setStroke(current.viewColor());
-            	rec.setFill(current.viewColor());
-            	Crit2Main.gpWorld.add(rec, x, y);
-                break;
-                         
-            case TRIANGLE: 
-            	Polygon tri = new Polygon();
-            	tri.setStroke(current.viewColor());
-            	tri.setFill(current.viewColor());
-		        tri.getPoints().addAll(new Double[]{
-		        	.1*polyDim, .1*polyDim,
-		            .9*polyDim, .1*polyDim,
-		            polyDim/2, .9*polyDim });
-		        Crit2Main.gpWorld.add(tri, x, y);
-                break;
-                
-            case DIAMOND: 
-            	Polygon diam = new Polygon();
-            	diam.setStroke(current.viewColor());
-            	diam.setFill(current.viewColor());
-			       	diam.getPoints().addAll(new Double[]{
-			           polyDim/2, .1*polyDim,
-			           .9*polyDim, polyDim/2,
-			           polyDim/2, .9*polyDim,
-			           .1*polyDim, polyDim/2  });
-			       	Crit2Main.gpWorld.add(diam, x, y);
-                break;
-                
-            case STAR: 
-            	Polygon star = new Polygon();
-            	star.setStroke(current.viewColor());
-            	star.setFill(current.viewColor());
-		        star.getPoints().addAll(new Double[]{
-		            polyDim/2, .1*polyDim,
-		            .6*polyDim, .4*polyDim,
-		            .9*polyDim, .4*polyDim,
-		            .7*polyDim, .6*polyDim,
-		            .9*polyDim, .9*polyDim,
-		            polyDim/2, .7*polyDim,
-		            .1*polyDim, .9*polyDim,
-		            .3*polyDim, .6*polyDim, 
-		            .1*polyDim, .4*polyDim,
-		            .4*polyDim, .4*polyDim  });
-		        Crit2Main.gpWorld.add(star, x, y);
-                break;
-                       
-        	} //end of switch
-        } //end of while loop that iterates through critterCollection
-        
+                case DIAMOND: 
+                	Polygon diam = new Polygon();
+                	diam.setStroke(current.viewColor());
+                	diam.setFill(current.viewColor());
+    			       	diam.getPoints().addAll(new Double[]{
+    			           polyDim/2, .1*polyDim,
+    			           .9*polyDim, polyDim/2,
+    			           polyDim/2, .9*polyDim,
+    			           .1*polyDim, polyDim/2  });
+    			       	Crit2Main.gpWorld.add(diam, i, j);
+                    break;
+                    
+                case STAR: 
+                	Polygon star = new Polygon();
+                	star.setStroke(current.viewColor());
+                	star.setFill(current.viewColor());
+    		        star.getPoints().addAll(new Double[]{
+    		            polyDim/2, .1*polyDim,
+    		            .6*polyDim, .4*polyDim,
+    		            .9*polyDim, .4*polyDim,
+    		            .7*polyDim, .6*polyDim,
+    		            .9*polyDim, .9*polyDim,
+    		            polyDim/2, .7*polyDim,
+    		            .1*polyDim, .9*polyDim,
+    		            .3*polyDim, .6*polyDim, 
+    		            .1*polyDim, .4*polyDim,
+    		            .4*polyDim, .4*polyDim  });
+    		        Crit2Main.gpWorld.add(star, i, j);
+                    break;
+                           
+            	} //end of switch
+        		}
+        	}
+        }
+       
 	}
 	
 	
 	
 	
 	
-	public static String[][] displayWorldOLD() {
-		String array[][]=new String[Params.world_width][Params.world_height];  //height is rows, width is cols
+	public static Critter[][] displayWorldOLD() {
+		Critter array[][]=new Critter[Params.world_width][Params.world_height];  //height is rows, width is cols
 		// array=new  String[Params.world_width][Params.world_height]; 
 		Iterator I= CritterWorld.critterCollection.iterator(); 
 		Critter current; 
@@ -506,7 +525,7 @@ public abstract class Critter {
 			int x=current.getEnergy();
 		//	System.out.println("Energy: " + current.getClass()+ " "+ x);  //DEBUG
 			if (x>0 && array[current.x_coord][current.y_coord]==null){
-				array[current.x_coord][current.y_coord]=current.toString();
+				array[current.x_coord][current.y_coord]=current;
 			}
 		}
 		
