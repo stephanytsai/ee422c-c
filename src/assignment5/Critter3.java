@@ -1,4 +1,4 @@
-/* CRITTERS <MyCritter4.java>
+/* CRITTERS <Critter3.java>
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
  * <Stephany Tsai>
