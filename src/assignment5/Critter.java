@@ -356,6 +356,7 @@ public abstract class Critter {
 			current = CritterWorld.critterCollection.get(i);
 			for(j=i+1; j<numCritters; j++){
 				Critter nextCritter = CritterWorld.critterCollection.get(j);
+				
 				//compare current to nextCritter in terms of coordinate location
 				if(current.isSamePostion(nextCritter) && (current.getEnergy()*nextCritter.getEnergy() > 0)){
 					Critter.resolveEncounter(current, nextCritter);
@@ -402,12 +403,14 @@ public abstract class Critter {
 	@SuppressWarnings("restriction")
 	public static void displayWorld(){
 		
+		double dimension = Math.min(250/Params.world_height, 500/Params.world_width);
+		double polyDim = Math.min(250/Params.world_height, 500/Params.world_width);
 		int row;
         int col;
         
         for(col=0;col<Params.world_width;col++){
         	for(row=0;row<Params.world_height;row++){
-        		Rectangle blank = new Rectangle(col,row,10,10);
+        		Rectangle blank = new Rectangle(col,row,dimension,dimension);
         		blank.setStroke(javafx.scene.paint.Color.WHITE);
             	blank.setFill(javafx.scene.paint.Color.SANDYBROWN);
             	Crit2Main.gpWorld.add(blank, col, row);
@@ -429,14 +432,14 @@ public abstract class Critter {
         	
         	switch (shape) {
             case CIRCLE:
-            	Circle cir = new Circle(x,y,5);
+            	Circle cir = new Circle(x,y,.9*dimension/2);
             	cir.setStroke(current.viewColor());
             	cir.setFill(current.viewColor());
 				Crit2Main.gpWorld.add(cir, x, y);
                 break;
                     
             case SQUARE:
-            	Rectangle rec = new Rectangle(x,y,10,10);
+            	Rectangle rec = new Rectangle(x,y,.9*dimension,.9*dimension);
             	rec.setStroke(current.viewColor());
             	rec.setFill(current.viewColor());
             	Crit2Main.gpWorld.add(rec, x, y);
@@ -447,9 +450,9 @@ public abstract class Critter {
             	tri.setStroke(current.viewColor());
             	tri.setFill(current.viewColor());
 		        tri.getPoints().addAll(new Double[]{
-		            0.0, 0.0,
-		            10.0, 0.0,
-		            5.0, 10.0 });
+		        	.1*polyDim, .1*polyDim,
+		            .9*polyDim, .1*polyDim,
+		            polyDim/2, .9*polyDim });
 		        Crit2Main.gpWorld.add(tri, x, y);
                 break;
                 
@@ -458,10 +461,10 @@ public abstract class Critter {
             	diam.setStroke(current.viewColor());
             	diam.setFill(current.viewColor());
 			       	diam.getPoints().addAll(new Double[]{
-			           5.0, 0.0,
-			           10.0, 5.0,
-			           5.0, 10.0,
-			           0.0, 5.0  });
+			           polyDim/2, .1*polyDim,
+			           .9*polyDim, polyDim/2,
+			           polyDim/2, .9*polyDim,
+			           .1*polyDim, polyDim/2  });
 			       	Crit2Main.gpWorld.add(diam, x, y);
                 break;
                 
@@ -470,16 +473,16 @@ public abstract class Critter {
             	star.setStroke(current.viewColor());
             	star.setFill(current.viewColor());
 		        star.getPoints().addAll(new Double[]{
-		            5.0, 0.0,
-		            6.0, 4.0,
-		            10.0, 5.0,
-		            7.0, 6.0,
-		            9.0, 9.0,
-		            5.0, 8.0,
-		            1.0, 9.0,
-		            3.0, 6.0, 
-		            0.0, 5.0,
-		            4.0, 4.0  });
+		            polyDim/2, .1*polyDim,
+		            .6*polyDim, .4*polyDim,
+		            .9*polyDim, .4*polyDim,
+		            .7*polyDim, .6*polyDim,
+		            .9*polyDim, .9*polyDim,
+		            polyDim/2, .7*polyDim,
+		            .1*polyDim, .9*polyDim,
+		            .3*polyDim, .6*polyDim, 
+		            .1*polyDim, .4*polyDim,
+		            .4*polyDim, .4*polyDim  });
 		        Crit2Main.gpWorld.add(star, x, y);
                 break;
                        

@@ -47,6 +47,6 @@ public class Critter4 extends Critter {
 		return CritterShape.SQUARE;
 	}
 	
-	public javafx.scene.paint.Color viewColor() { return javafx.scene.paint.Color.ORANGE; }
+	public javafx.scene.paint.Color viewColor() { return javafx.scene.paint.Color.PALEGREEN; }
 
 }

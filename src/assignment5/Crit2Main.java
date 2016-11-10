@@ -34,6 +34,8 @@ public class Crit2Main extends Application {
 	public static GridPane gpStart = new GridPane();
 	public static GridPane gpStats = new GridPane();
 	
+	
+	
 	public int turnCount=0;
 	
 	
@@ -55,8 +57,8 @@ public class Crit2Main extends Application {
 			border.setCenter(gpWorld);
 			border.setRight(gpMenu2);
 			border.setBottom(gpStats);
-			Scene startScene = new Scene(gpStart, 1000, 650);
-			Scene scene = new Scene(border, 1000, 650); 
+			Scene startScene = new Scene(gpStart, 1275, 700);
+			Scene scene = new Scene(border, 1275, 700); 
 			
 			
 			
