@@ -1,3 +1,15 @@
+/* CRITTERS <Params.java>
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * <Stephany Tsai>
+ * <st26536>
+ * <16445>
+ * <Rajan Makanji>
+ * <rm45378>
+ * <16445>
+ * Slip days used: <0>
+ * Fall 2016
+ */
 package assignment5;
 
 /*
@@ -6,8 +18,8 @@ package assignment5;
  */
 
 public class Params {
-	public static int world_width = 3; 
-	public static int world_height = 3; 
+	public static int world_width = 10; 
+	public static int world_height = 10; 
 	public static int walk_energy_cost = 2; 
 	public static int run_energy_cost = 5; 
 	public static int rest_energy_cost = 0; 
